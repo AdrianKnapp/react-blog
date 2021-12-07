@@ -1,1 +1,14 @@
-// TODO
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  padding: 0 var(--container-padding);
+  margin: 0 auto;
+
+  .logo {
+    position: relative;
+    width: 238px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+  }
+}

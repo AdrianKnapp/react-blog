@@ -1,1 +1,49 @@
-// TODO
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  padding: var(--container-padding);
+  margin: 0 auto;
+}
+.headerContainer {
+  @extend .container;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    font-size: var(--primary-title-font-size);
+  }
+}
+.banner {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+.infosContainer {
+  display: flex;
+  width: 100%;
+  margin-top: 30px;
+  color: var(--info);
+
+  div {
+    display: flex;
+    align-items: center;
+    font-size: var(--info-font-size);
+
+    .icon {
+      font-size: 20px;
+      margin-right: 5px;
+    }
+
+    & + div {
+      margin-left: 20px;
+    }
+  }
+}
+.mainContainer {
+  @extend .container;
+  margin-top: 50px;
+  h1, h2, h3, h4, h5, h6 {
+    margin: 20px 0;
+  }
+}

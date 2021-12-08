@@ -2,6 +2,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  text-decoration: none;
 }
 
 :root {
@@ -12,12 +13,17 @@
   --body: #D7D7D7;
   --container-width: 740px;
   --container-padding: 1.25rem;
+  --info-font-size: 0.875rem;
+  --primary-title-font-size: 3rem;
+  --title-font-size: 2.25rem;
+  --text-font-size: 1.125rem;
 }
 
 body {
   background-color: #1A1D23;
   font-family: 'Inter', sans-serif;
   color: var(--body);
+  padding-bottom: 50px;
 }
 
 @media (max-width: 1080px) {
@@ -33,4 +39,8 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   color: var(--heading);
+}
+
+button, input, select, textarea {
+  font-family: 'Inter', sans-serif;
 }

@@ -20,7 +20,8 @@
   }
 
   p {
-    font-size: 18px;
+    font-size: var(--text-font-size);
+    color: var(--body);
     font-weight: 400;
     text-align: justify;
     margin-top: 10px;
@@ -30,7 +31,7 @@
     display: flex;
     margin-top: 20px;
     color: var(--info);
-    font-size: 14px;
+    font-size: var(--info-font-size);
 
     div {
       display: flex;
@@ -53,5 +54,23 @@
 
   & + .post {
     margin-top: 40px;
+  }
+}
+
+.loadmoreButton {
+  margin-top: 50px;
+  cursor: pointer;
+  transition: .2s;
+
+  button {
+    font-size: var(--text-font-size);
+    color: var(--highlight);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  &:hover {
+    filter: brightness(.8);
   }
 }

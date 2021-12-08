@@ -1,9 +1,12 @@
 import { GetStaticProps } from 'next';
 
 import { FiUser, FiCalendar } from 'react-icons/fi';
+import Prismic from '@prismicio/client';
+import Link from 'next/link';
+import { format } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
+import { useState } from 'react';
 import { getPrismicClient } from '../services/prismic';
-
-import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
 
 interface Post {
@@ -26,27 +29,83 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps): JSX.Element {
+  const { results, next_page } = postsPagination;
+
+  const [postsData, setPostsData] = useState({
+    nextPage: next_page,
+    posts: results,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const loadMore = async () => {
+    const response = await fetch(next_page);
+    const data = await response.json();
+
+    const newPosts = [...postsData.posts, ...data.results];
+
+    setPostsData({
+      nextPage: data.next_page,
+      posts: newPosts,
+    });
+  };
+
   return (
-    <main className={styles.container}>
-      <div className={styles.post}>
-        <h2>Como utilizar Hooks</h2>
-        <p>Pensando em sincronizalção em vez de ciclos de vida</p>
-        <div className={styles.info}>
-          <div className={styles.date}>
-            <FiCalendar className={styles.icon} />
-            15 Mar 2021
-          </div>
-          <div className={styles.author}>
-            <FiUser className={styles.icon} />
-            Joseph Oliveira
-          </div>
+    <>
+      <main className={styles.container}>
+        {postsData.posts.map(post => (
+          <Link href={`/post/${post.uid}`} key={post.uid}>
+            <a className={styles.post}>
+              <h2>{post.data.title}</h2>
+              <p>{post.data.subtitle}</p>
+              <div className={styles.info}>
+                <div className={styles.date}>
+                  <FiCalendar className={styles.icon} />
+                  {format(
+                    new Date(post.first_publication_date),
+                    "d 'de' MMM 'de' yyyy",
+                    {
+                      locale: ptBR,
+                    }
+                  )}
+                </div>
+                <div className={styles.author}>
+                  <FiUser className={styles.icon} />
+                  {post.data.author}
+                </div>
+              </div>
+            </a>
+          </Link>
+        ))}
+      </main>
+      {postsData.nextPage && (
+        <div className={`${styles.container} ${styles.loadmoreButton}`}>
+          <button onClick={loadMore} type="button">
+            Carregar mais posts
+          </button>
         </div>
-      </div>
-    </main>
+      )}
+    </>
   );
 }
 
-/* export const getStaticProps = async () => {
+export const getStaticProps: GetStaticProps<HomeProps> = async () => {
   const prismic = getPrismicClient();
-  const postsResponse = await prismic.query('TODO');
-}; */
+  const postsResponse = await prismic.query(
+    [Prismic.predicates.at('document.type', 'posts')],
+    {
+      /* fetch: ['posts.title', 'posts.content'], */
+      pageSize: 1,
+    }
+  );
+
+  const postsPagination = {
+    next_page: postsResponse.next_page,
+    results: postsResponse.results,
+  };
+
+  return {
+    props: {
+      postsPagination,
+    },
+  };
+};

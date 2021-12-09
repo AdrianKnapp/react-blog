@@ -3,6 +3,10 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import Image from 'next/image';
 import { FiUser, FiCalendar, FiClock } from 'react-icons/fi';
 import Prismic from '@prismicio/client';
+import { format } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
+import { RichText } from 'prismic-dom';
+import { useRouter } from 'next/router';
 import { getPrismicClient } from '../../services/prismic';
 import styles from './post.module.scss';
 
@@ -32,15 +36,36 @@ type ImageLoaderProps = {
 };
 
 export default function Post({ post }: PostProps): JSX.Element {
+  const router = useRouter();
+
   const ImageLoader = ({ src }: ImageLoaderProps): string => src;
-  console.log(post);
-  return (
+
+  const timeToRead = post?.data.content.reduce((accumulator, currentValue) => {
+    const bodyText = RichText.asText(currentValue.body)
+      .split(/<.+?>(.+?)<\/.+?>/g)
+      .filter(t => t);
+
+    const wordsTotal = [];
+    bodyText.forEach(text => {
+      text.split(' ').forEach(word => {
+        wordsTotal.push(word);
+      });
+    });
+
+    const minutes = Math.ceil(wordsTotal.length / 200);
+
+    return accumulator + minutes;
+  }, 0);
+
+  return router.isFallback ? (
+    <div className={styles.container}>Carregando...</div>
+  ) : (
     <>
       <header>
         <div className={styles.banner}>
           <Image
             loader={ImageLoader}
-            src="/banner.png"
+            src={post.data.banner.url}
             alt="Imagem do produto"
             width={1440}
             height={400}
@@ -48,31 +73,41 @@ export default function Post({ post }: PostProps): JSX.Element {
           />
         </div>
         <div className={styles.headerContainer}>
-          <h1>Criado um app CRA do zero</h1>
+          <h1>{post.data.title}</h1>
           <div className={styles.infosContainer}>
             <div className={styles.date}>
               <FiCalendar className={styles.icon} />
-              15 Mar 2021
+              {format(
+                new Date(post.first_publication_date),
+                "d 'de' MMM 'de' yyyy",
+                {
+                  locale: ptBR,
+                }
+              )}
             </div>
             <div className={styles.author}>
               <FiUser className={styles.icon} />
-              Joseph Oliveira
+              {post.data.author}
             </div>
             <div className={styles.time}>
-              <FiClock className={styles.icon} />4 min
+              <FiClock className={styles.icon} />
+              {timeToRead} min
             </div>
           </div>
         </div>
       </header>
       <main className={styles.mainContainer}>
-        <h2>Proin et varius</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor
-          sapien, vulputate eu diam at, condimentum hendrerit tellus. Nam
-          facilisis sodales felis, pharetra pharetra lectus auctor sed. Ut
-          venenatis mauris vel libero pretium, et pretium ligula faucibus. Morbi
-          nibh felis, elementum a posuere et, vulputate et erat. Nam venenatis.
-        </p>
+        {post.data.content.map(content => (
+          <div key={content.heading}>
+            <h2>{content.heading}</h2>
+            <div
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{
+                __html: RichText.asHtml(content.body),
+              }}
+            />
+          </div>
+        ))}
       </main>
     </>
   );

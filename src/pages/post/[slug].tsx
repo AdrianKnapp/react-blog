@@ -2,8 +2,8 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 
 import Image from 'next/image';
 import { FiUser, FiCalendar, FiClock } from 'react-icons/fi';
+import Prismic from '@prismicio/client';
 import { getPrismicClient } from '../../services/prismic';
-import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 
 interface Post {
@@ -33,7 +33,7 @@ type ImageLoaderProps = {
 
 export default function Post({ post }: PostProps): JSX.Element {
   const ImageLoader = ({ src }: ImageLoaderProps): string => src;
-
+  console.log(post);
   return (
     <>
       <header>
@@ -78,16 +78,39 @@ export default function Post({ post }: PostProps): JSX.Element {
   );
 }
 
-// export const getStaticPaths = async () => {
-//   const prismic = getPrismicClient();
-//   const posts = await prismic.query(TODO);
+export const getStaticPaths: GetStaticPaths = async () => {
+  const prismic = getPrismicClient();
+  const posts = await prismic.query(
+    [Prismic.predicates.at('document.type', 'posts')],
+    {
+      fetch: ['posts.uid'],
+      pageSize: 100,
+    }
+  );
 
-//   // TODO
-// };
+  const postsPaths = posts.results.map(post => {
+    return {
+      params: {
+        slug: post.uid,
+      },
+    };
+  });
 
-// export const getStaticProps = async context => {
-//   const prismic = getPrismicClient();
-//   const response = await prismic.getByUID(TODO);
+  return {
+    paths: postsPaths,
+    fallback: true,
+  };
+};
 
-//   // TODO
-// };
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { slug } = params;
+
+  const prismic = getPrismicClient();
+  const response = await prismic.getByUID('posts', String(slug), {});
+
+  return {
+    props: {
+      post: response,
+    },
+  };
+};

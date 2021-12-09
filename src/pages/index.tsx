@@ -35,10 +35,10 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
     nextPage: next_page,
     posts: results,
   });
-
+  /* console.log(postsData); */
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const loadMore = async () => {
-    const response = await fetch(next_page);
+    const response = await fetch(postsData.nextPage);
     const data = await response.json();
 
     const newPosts = [...postsData.posts, ...data.results];
@@ -107,5 +107,6 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
     props: {
       postsPagination,
     },
+    revalidate: 60,
   };
 };

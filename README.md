@@ -1,19 +1,17 @@
 # Shopping Cart Hook
 
-Dtmoney is a web app which had done to organize and manage your finances. The challenge was to create a system that should be able to add, edit and remove items from the finances table, showing your current balance, deposits, and withdrawals.
+Spacetraveling is a web app, developed through the JAM Stack pattern. The choice, in this case, was the Prismic, being the Headless CMS selected to be responsible for the back-end of the project. In the Front-end, ReactJS and NextJS were indispensable. Where it was possible to play and exercise some of the skills that involve the generation of static pages.
 
 ### Home
-![Home](https://github.com/AdrianKnapp/dtmoney/blob/master/prints/home.png)
+![Home](https://github.com/AdrianKnapp/react-blog/blob/master/prints/home.png)
 
-### Add transaction
-![Cart](https://github.com/AdrianKnapp/dtmoney/blob/master/prints/add-transaction.png)
-
-### Added
-![Home](https://github.com/AdrianKnapp/dtmoney/blob/master/prints/added.png)
+### Post
+![Post](https://github.com/AdrianKnapp/react-blog/blob/master/prints/post-1.png)
+![Post](https://github.com/AdrianKnapp/react-blog/blob/master/prints/post-2.png)
 ## Installation
 
 Use ```git clone``` to install the project.
 
 ## Usage
 
-Use ```yarn start``` to initialize your localhost server.
+Use ```yarn dev``` to initialize your localhost server.

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { useState } from 'react';
+import Head from 'next/head';
 import { getPrismicClient } from '../services/prismic';
 import styles from './home.module.scss';
 
@@ -51,6 +52,9 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
 
   return (
     <>
+      <Head>
+        <title>Início | spacetraveling.</title>
+      </Head>
       <main className={styles.container}>
         {postsData.posts.map(post => (
           <Link href={`/post/${post.uid}`} key={post.uid}>

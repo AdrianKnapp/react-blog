@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { RichText } from 'prismic-dom';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { getPrismicClient } from '../../services/prismic';
 import styles from './post.module.scss';
 
@@ -61,6 +62,9 @@ export default function Post({ post }: PostProps): JSX.Element {
     <div className={styles.container}>Carregando...</div>
   ) : (
     <>
+      <Head>
+        <title>{post.data.title} | spacetraveling.</title>
+      </Head>
       <header>
         <div className={styles.banner}>
           <Image
